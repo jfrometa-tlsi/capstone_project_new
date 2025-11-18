@@ -41,7 +41,7 @@ def get_client_service_level(client_list, year=None, month=None):
         month (int): Month to filter
     
     Returns:
-        dict: Service levels for each client
+        dict: Service levels for each client 
     """
     df = load_expeditions_data()
     if df.empty:
