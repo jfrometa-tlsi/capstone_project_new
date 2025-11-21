@@ -16,7 +16,7 @@
 
 from google.adk.agents import LlmAgent
 from google.adk.tools import AgentTool
-from api_app.config import WAREHOUSE_MODEL_orq, WAREHOUSE_MODEL_esp
+from config import WAREHOUSE_MODEL_orq, WAREHOUSE_MODEL_esp
 
 
 # Import our utility functions

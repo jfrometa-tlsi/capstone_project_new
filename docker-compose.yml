@@ -1,7 +1,7 @@
 version: "3.9"
 
 services:
-  api:
+  api_app:
     build:
       context: ./api_app
       dockerfile: Dockerfile.api
@@ -16,8 +16,9 @@ services:
     ports:
       - "8000:8000"
     restart: always
+    
 
-  dash:
+  dash_app:
     build:
       context: ./dash_app
       dockerfile: Dockerfile.dash
@@ -26,6 +27,10 @@ services:
       - ./common:/common:ro
     environment:
       PYTHONPATH: "/app:/common"
+      API_URL: "http://api_app:8000"
     ports:
       - "8050:8050"
     restart: always
+    depends_on:  # 🔥 AÑADIR para orden de inicio
+      - api_app
+    

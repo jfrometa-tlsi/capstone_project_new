@@ -19,8 +19,8 @@ from google.adk.sessions import InMemorySessionService
 from google.genai import types
 
 from common.utils.logger import setup_logger
-from api_app.agents.agent import orchestrator_agent, client_service_agent, reference_expeditions_agent, stock_analysis_agent
-from api_app.agents.tracing_plugin import tracing_plugin
+from agents.agent import orchestrator_agent, client_service_agent, reference_expeditions_agent, stock_analysis_agent
+from agents.tracing_plugin import tracing_plugin
 
 logger = setup_logger()
 

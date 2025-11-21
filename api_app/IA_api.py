@@ -30,9 +30,9 @@ if project_root not in sys.path:
 
 from common.utils.logger import setup_logger
 
-from api_app.agents.agent_manager import agent_manager
+from agents.agent_manager import agent_manager
 
-from api_app.agents.tracing_plugin import tracing_plugin
+from agents.tracing_plugin import tracing_plugin
 
 # Configure logging
 logger = setup_logger()

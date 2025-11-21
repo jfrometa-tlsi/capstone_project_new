@@ -4,6 +4,9 @@ from .logger import setup_logger
 
 logger = setup_logger()
 
+COMMON_DATA_PATH = "/common/data"
+COMMON_DATA_PATH1 = "common/data"
+
 def load_expeditions_data():
     """
     Load and return expeditions data from Excel file.
@@ -16,16 +19,23 @@ def load_expeditions_data():
             - cantidadPedida: float
             - cantidadServida: float
             - fechaTransporte: datetime
-    """
+    """    
     try:
-        df = pd.read_excel('common/data/expediciones_test.xlsx')
+        df = pd.read_excel(f'{COMMON_DATA_PATH}/expediciones_test.xlsx')
         df['fechaTransporte'] = pd.to_datetime(df['fechaTransporte'])
         df['cliente'] = df['cliente'].astype(str)
         logger.info("Expeditions data loaded successfully.")
         return df
-    except Exception as e:
-        logger.error(f"Error loading expeditions data: {e}")
-        return pd.DataFrame()
+    except:
+        try:
+            df = pd.read_excel(f'{COMMON_DATA_PATH1}/expediciones_test.xlsx')
+            df['fechaTransporte'] = pd.to_datetime(df['fechaTransporte'])
+            df['cliente'] = df['cliente'].astype(str)
+            logger.info("Expeditions data loaded successfully.")
+            return df
+        except Exception as e:
+            logger.error(f"Error loading expeditions data: {e}")
+            return pd.DataFrame()
 
 def load_stock_data():
     """
@@ -40,10 +50,16 @@ def load_stock_data():
             - Fecha: datetime
     """
     try:
-        df = pd.read_excel('common/data/ubicaciones_test.xlsx')
+        df = pd.read_excel(f"{COMMON_DATA_PATH}/ubicaciones_test.xlsx")
         df['fecha'] = pd.to_datetime(df['fecha'])
         logger.info("Stock data loaded successfully.")
         return df
-    except Exception as e:
-        logger.error(f"Error loading stock data: {e}")
-        return pd.DataFrame()
+    except:
+        try:
+            df = pd.read_excel(f"{COMMON_DATA_PATH1}/ubicaciones_test.xlsx")
+            df['fecha'] = pd.to_datetime(df['fecha'])
+            logger.info("Stock data loaded successfully.")
+            return df
+        except Exception as e:
+            logger.error(f"Error loading stock data: {e}")
+            return pd.DataFrame()

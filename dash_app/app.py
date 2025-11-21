@@ -69,6 +69,13 @@ from common.utils.expedition_analysis import get_top_clients, get_client_service
 from common.utils.reference_analysis import get_top_references_expeditions, get_reference_time_series, forecast_next_month_demand
 from common.utils.stock_analysis import get_top_references_stock, get_avg_time_in_warehouse, get_stock_metrics
 
+import os
+
+# Usar variable de entorno o fallback
+API_URL = os.getenv('API_URL')
+if not API_URL:
+    API_URL = 'http://localhost:8000'
+
 # Initialize the Dash app
 app = dash.Dash(__name__)
 app.title = "Warehouse Analytics Dashboard"
@@ -564,7 +571,7 @@ def update_ai_chat(n_clicks, user_message):
     try:
         query = {"message": user_message, "session_id": "user_id_from_dash"}
         response = requests.post(
-        "http://localhost:8000/query",
+        f"{API_URL}/query",
         json=query
     )
         
@@ -599,7 +606,7 @@ def update_ai_chat(n_clicks, user_message):
     [State('ai-chat-input', 'value')],
     prevent_initial_call=True
 )
-def show_loading(n_clicks, user_message):
+def show_loading_(n_clicks, user_message):
     if n_clicks and user_message:
         return html.Div([
             html.Div([
@@ -617,7 +624,7 @@ def show_loading(n_clicks, user_message):
 def update_server_status(tab):
     if tab == 'tab1':
         is_healthy = requests.get(
-            "http://localhost:8000/health",
+            f"{API_URL}/health",
             timeout=30
         )
         
@@ -629,4 +636,4 @@ def update_server_status(tab):
                             style={'color': 'red', 'fontSize': '12px'})
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=8050, debug=True)
