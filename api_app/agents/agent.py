@@ -14,27 +14,21 @@
 # Debería haber recibido una copia de la Licencia Pública General de GNU
 # junto con este programa. Si no, vea <https://www.gnu.org/licenses/>.
 
-from google.genai import types
 from google.adk.agents import LlmAgent
-from google.adk.models.google_llm import Gemini
-from google.adk.runners import InMemoryRunner
-from google.adk.sessions import InMemorySessionService
-from google.adk.tools import AgentTool, ToolContext
-import os
-from config import WAREHOUSE_MODEL_orq
-from config import WAREHOUSE_MODEL_esp
-from datetime import datetime
+from google.adk.tools import AgentTool
+from api_app.config import WAREHOUSE_MODEL_orq, WAREHOUSE_MODEL_esp
+
 
 # Import our utility functions
-from utils.expedition_analysis import get_top_clients, get_client_service_level, get_expedition_metrics
-from utils.reference_analysis import get_top_references_expeditions, get_reference_time_series, forecast_next_month_demand
-from utils.stock_analysis import get_top_references_stock, get_avg_time_in_warehouse, get_stock_metrics
+from common.utils.expedition_analysis import get_top_clients, get_client_service_level, get_expedition_metrics
+from common.utils.reference_analysis import get_top_references_expeditions, get_reference_time_series, forecast_next_month_demand
+from common.utils.stock_analysis import get_top_references_stock, get_avg_time_in_warehouse, get_stock_metrics
 
 # Setup logging
-from utils.logger import setup_logger
+from common.utils.logger import setup_logger
 logger = setup_logger()
 
-from utils.data_loader import load_expeditions_data
+from common.utils.data_loader import load_expeditions_data
 df_expeditions = load_expeditions_data()
 
 def avalaible_years():

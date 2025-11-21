@@ -40,28 +40,61 @@ A comprehensive warehouse analytics dashboard built with Plotly Dash, enhanced w
 - **Gemini 2.5 Flash**: Large language model
 - **Custom Tools**: Modular function tools for data analysis
 
+### 🐳 Docker Architecture
+
+The project uses a multi-container Docker setup for better scalability and isolation:
+
+### Container Structure
+- **api_app**: FastAPI backend with AI agents (Port 8000)
+- **dash_app**: Plotly Dash frontend (Port 8050) 
+- **Shared Volume**: `common/` directory for shared utilities and data
+
+### Benefits
+- **Isolated Environments**: Separate dependencies for API and Dashboard
+- **Easy Deployment**: One command to start all services
+- **Development Consistency**: Same environment across all machines
+- **Scalability**: Easy to scale individual components
+
 ## 📁 Project Structure
 ```text
 warehouse-analytics/
-├── app.py # Main Dash application
-├── IA_api.py # Main fastapi application for IA service
-├── config.py # Configuration of IA models
-├── agents/ # AI agents implementation
-│ ├── init.py
-│ ├── agent.py # Main orchestrator agent and agents tools
-│ └── agent_manager.py # Agent session management
-├── utils/ # Data processing modules
-│ ├── data_loader.py # Excel data loading
-│ ├── expedition_analysis.py # Client service analysis
-│ ├── reference_analysis.py # Demand forecasting
-│ └── stock_analysis.py # Inventory analysis
-│ └── logger.py # logging module tool
-├── data/ # Sample data files
-│ ├── expediciones_test.xlsx # Expedition data
-│ └── ubicaciones_test.xlsx # Stock location data
-├── assets/ # Static assets
-├── requirements.txt # Python dependencies
-└── .env # Environment variables
+│
+├── common/ # Shared resources between containers
+│ ├── utils/ # Data processing utilities
+│ │ ├── data_loader.py # Excel data loading functions
+│ │ ├── expedition_analysis.py # Client service analysis
+│ │ ├── reference_analysis.py # Demand forecasting
+│ │ ├── stock_analysis.py # Inventory analysis
+│ │ └── logger.py # Logging configuration
+│ │
+│ ├── data/ # Sample data (mounted volume)
+│ │ ├── expediciones_test.xlsx
+│ │ └── ubicaciones_test.xlsx
+│ │
+│ └── init.py
+│
+├── api_app/ # FastAPI Backend Container
+│ ├── IA_api.py # FastAPI server entry point
+│ ├── agents/ # AI agents implementation
+│ │ ├── agent.py # Agent definitions and tools
+│ │ ├── agent_manager.py # Agent session management
+│ │ └── init.py
+│ ├── config.py # Configuration and model settings
+│ ├── requirements.txt # Python dependencies for API
+│ ├── Dockerfile.api # API container definition
+│ ├── .env # Environment variables
+│ └── init.py
+│
+├── dash_app/ # Dash Frontend Container
+│ ├── app.py # Dash application entry point
+│ ├── requirements.txt # Python dependencies for Dashboard
+│ ├── Dockerfile.dash # Dashboard container definition
+│ └── init.py
+│
+├── docker-compose.yml # Multi-container orchestration
+├── README.md
+├── LICENSE
+└── .gitignore
 ```
 
 
@@ -69,7 +102,7 @@ warehouse-analytics/
 
 ### Data Flow
 1. **Data Loading**: Excel files → Pandas DataFrames
-2. **Processing**: Modular functions in `/utils`
+2. **Processing**: Modular functions in `common/utils`
 3. **Visualization**: Dash components and Plotly charts
 4. **AI Integration**: Natural language → Agent tools → Insights
 
@@ -117,8 +150,11 @@ flowchart TD
 - Python 3.13
 - Google Gemini API key
 - Git
+- Docker and Docker Compose (Optional)
 
 ### Step-by-Step Setup
+
+#### Quick Start with Docker (Recommended)
 
 1. **Clone the repository**
    
@@ -126,8 +162,40 @@ flowchart TD
 git clone <repository-url>
 cd warehouse-analytics
 ```
-    
-2. **Create virtual environment**
+
+2. **Enviroment configuration**
+
+```bash
+# Create .env file
+cp .env.example .env
+# Edit .env and add your Gemini API key
+echo "GEMINI_API_KEY=your_google_gemini_api_key_here" >> .env
+```
+3. **Prepare sample data**
+
+- Place your Excel files in the common/data/ directory
+
+- Ensure files follow the expected column structure
+
+4. **Run with Docker Compose**
+
+```bash
+docker-compose up --build
+```
+
+5. **Access the applications**
+
+- Dashboard: http://localhost:8050
+
+- API Docs: http://localhost:8000/docs
+
+- API Health: http://localhost:8000/health
+
+#### Manual Development Setup
+
+If you prefer to run without Docker:
+
+1. **Create virtual environment**
    
 ```bash
 python -m venv venv
@@ -137,6 +205,11 @@ source venv/bin/activate  # On Windows: venv\Scripts\activate
 3. **Install dependencies**
 
 ```bash
+cd api_app 
+pip install -r requirements.txt
+
+cd ..
+cd dash_app
 pip install -r requirements.txt
 ```
 
@@ -156,14 +229,14 @@ echo "GEMINI_API_KEY=your_google_gemini_api_key_here" > .env
 6. **Run the IA backend server**
 
 ```bash
-python IA_api.py
+python api_app/IA_api.py
 ```
 
 7. **Run the Dashboard application**
 _Open a new terminal_
 
 ```bash
-python app.py
+python dash_app/app.py
 ```
 
 1. **Access the dashboard**
@@ -225,6 +298,10 @@ The AI agents have access to specialized tools:
 
 - Demand forecasting models
 
+#### 🔍 Observability and Tracing
+
+The system incorporates tracing, seamlessly integrated via an ADK Plugin, to provide full visibility into the agent's decision-making process. This capability ensures that the entire lifecycle of any user query—from Orchestrator planning to specialized Tool Execution is fully auditable, confirming the strategic success of the multi-agent design.
+
 ## 🎯 Business Value
 
 ### For Warehouse Managers
@@ -249,13 +326,31 @@ The AI agents have access to specialized tools:
 
 - AI Service Resilience and Error Isolation: API errors (such as rate limit errors like 429) from the Gemini service are now gracefully handled by the FastAPI backend. This prevents direct UI crashes in the Dash frontend, ensuring a stable and professional user experience, even during high-traffic or resource-constrained scenarios.
 
+### Operational Benefits
+
+- **Containerized Deployment**: Easy to deploy and scale in production
+
+- **Environment Consistency**: Same behavior across development, staging, and production
+
+- **Resource Isolation**: API and Dashboard run in isolated environments
+
+- **Rapid Scaling**: Easy to scale individual components based on load
+
+### Development Benefits  
+
+- **Simplified Onboarding**: New developers can start with one command
+
+- **Dependency Management**: No conflicts between API and Dashboard dependencies
+
+- **CI/CD Ready**: Dockerized setup integrates easily with modern DevOps pipelines
+
 ## 🔧 Customization
 
 ### Adding New Data Sources
 
-- Extend utils/data_loader.py
+- Extend common/utils/data_loader.py
 
-- Create new analysis modules in /utils
+- Create new analysis modules in common/utils
 
 - Add corresponding visualization components
 
@@ -263,11 +358,11 @@ The AI agents have access to specialized tools:
 
 ### Creating New Agents
 
-- Define specialized tools in agents/specialized_agents.py
+- Define specialized tools in api_app/agents/specialized_agents.py
 
 - Create agent with domain-specific instructions
 
-- Register with orchestrator in agents/orchestrator_agent.py
+- Register with orchestrator in api_app/agents/orchestrator_agent.py
 
 ## 🚨 Troubleshooting
 
@@ -298,6 +393,16 @@ The AI agents have access to specialized tools:
 - Check Dash and Plotly versions compatibility
 
 - **Dashboard Not Responding to AI Queries**: Verify that the FastAPI agent server is running on http://localhost:8000
+
+### Docker Issues
+
+- **Port conflicts**: Ensure ports 8000 and 8050 are available
+
+- **Build failures**: Check Dockerfile syntax and requirements.txt
+
+- **Volume mounting**: Verify file permissions in `common/` directory
+
+- **Container communication**: Ensure both services can reach each other
 
 ## 📈 Future Enhancements
 
@@ -340,16 +445,6 @@ The AI agents have access to specialized tools:
 ## 📄 License
 
 This project is licensed under the **GNU General Public License v3.0 (GPLv3)** - see the LICENSE file for details.
-
-## 🙏 Acknowledgments
-
-- Google Gemini for AI capabilities
-
-- Plotly Dash for visualization framework
-
-- Pandas community for data processing tools
-
-- Course instructors and mentors
 
 Note: This project was developed as part of a Google AI course capstone project, focusing on practical applications of AI agents in business analytics.
 

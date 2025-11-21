@@ -1,0 +1,26 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Virtual environments
+.env
+.venv
+venv/
+env/
+
+# Development
+.idea/
+.vscode/
+
+# Tests
+tests/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local datasets (NO datasets dentro del contenedor)
+data/

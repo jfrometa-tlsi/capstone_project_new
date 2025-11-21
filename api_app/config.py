@@ -1,5 +1,5 @@
 import os
-from utils.logger import setup_logger
+from common.utils.logger import setup_logger
 from dotenv import load_dotenv
 from google.genai import types
 from google.adk.models.google_llm import Gemini

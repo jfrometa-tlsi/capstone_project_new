@@ -17,10 +17,12 @@
 from google.adk.runners import Runner
 from google.adk.sessions import InMemorySessionService
 from google.genai import types
-import logging
-from .agent import orchestrator_agent, client_service_agent, reference_expeditions_agent, stock_analysis_agent
 
-logger = logging.getLogger(__name__)
+from common.utils.logger import setup_logger
+from api_app.agents.agent import orchestrator_agent, client_service_agent, reference_expeditions_agent, stock_analysis_agent
+from api_app.agents.tracing_plugin import tracing_plugin
+
+logger = setup_logger()
 
 class WarehouseAgentManager:
     """Manager for all warehouse analytics AI agents"""
@@ -29,7 +31,7 @@ class WarehouseAgentManager:
         self.session_service = InMemorySessionService()
         self.orchestrator = orchestrator_agent
         self.APP_NAME = "agents"
-        self.runner = Runner(agent=self.orchestrator, app_name=self.APP_NAME, session_service=self.session_service)
+        self.runner = Runner(agent=self.orchestrator, app_name=self.APP_NAME, session_service=self.session_service,plugins=[tracing_plugin])
         self.specialized_agents = {
             'client': client_service_agent,
             'reference': reference_expeditions_agent, 

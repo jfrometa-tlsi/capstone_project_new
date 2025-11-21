@@ -49,16 +49,25 @@ import plotly.graph_objects as go
 import pandas as pd
 from datetime import datetime
 import requests
+import sys
+import os
 
-from utils.logger import setup_logger
+current_dir = os.path.dirname(os.path.abspath(__file__))
+
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from common.utils.logger import setup_logger
 
 logger = setup_logger()
 
 # Import our utility functions
-from utils.data_loader import load_expeditions_data, load_stock_data
-from utils.expedition_analysis import get_top_clients, get_client_service_level, get_expedition_metrics
-from utils.reference_analysis import get_top_references_expeditions, get_reference_time_series, forecast_next_month_demand
-from utils.stock_analysis import get_top_references_stock, get_avg_time_in_warehouse, get_stock_metrics
+from common.utils.data_loader import load_expeditions_data, load_stock_data
+from common.utils.expedition_analysis import get_top_clients, get_client_service_level, get_expedition_metrics
+from common.utils.reference_analysis import get_top_references_expeditions, get_reference_time_series, forecast_next_month_demand
+from common.utils.stock_analysis import get_top_references_stock, get_avg_time_in_warehouse, get_stock_metrics
 
 # Initialize the Dash app
 app = dash.Dash(__name__)

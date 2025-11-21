@@ -11,7 +11,7 @@ def setup_logger():
         os.makedirs('logs')
     
     # Nombre del archivo con fecha
-    log_filename = f"logs/dashboard_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+    log_filename = f"logs/api_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
     
     # Configurar logging
     logging.basicConfig(
@@ -23,7 +23,7 @@ def setup_logger():
         ]
     )
     
-    return logging.getLogger('dashboard')
+    return logging.getLogger('api')
 
 # Inicializar logger
 logger = setup_logger()

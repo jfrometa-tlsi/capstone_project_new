@@ -18,14 +18,21 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
-from utils.logger import setup_logger
 import sys
 import os
 
-# Add the project root to Python path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-from agents.agent_manager import agent_manager
+project_root = os.path.abspath(os.path.join(current_dir, '..'))
+
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+
+from common.utils.logger import setup_logger
+
+from api_app.agents.agent_manager import agent_manager
+
+from api_app.agents.tracing_plugin import tracing_plugin
 
 # Configure logging
 logger = setup_logger()
@@ -108,6 +115,11 @@ async def get_agents_info():
             "stock_analysis_agent - Stock and inventory analysis"
         ]
     }
+
+@app.get("/trajectory")
+async def get_all_trajectories():
+    """Get trajectory data for all sessions"""
+    return tracing_plugin.get_stats()
 
 if __name__ == "__main__":
     uvicorn.run(

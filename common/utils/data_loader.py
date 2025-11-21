@@ -18,7 +18,7 @@ def load_expeditions_data():
             - fechaTransporte: datetime
     """
     try:
-        df = pd.read_excel('data/expediciones_test.xlsx')
+        df = pd.read_excel('common/data/expediciones_test.xlsx')
         df['fechaTransporte'] = pd.to_datetime(df['fechaTransporte'])
         df['cliente'] = df['cliente'].astype(str)
         logger.info("Expeditions data loaded successfully.")
@@ -40,7 +40,7 @@ def load_stock_data():
             - Fecha: datetime
     """
     try:
-        df = pd.read_excel('data/ubicaciones_test.xlsx')
+        df = pd.read_excel('common/data/ubicaciones_test.xlsx')
         df['fecha'] = pd.to_datetime(df['fecha'])
         logger.info("Stock data loaded successfully.")
         return df

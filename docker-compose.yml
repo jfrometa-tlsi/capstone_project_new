@@ -1,0 +1,31 @@
+version: "3.9"
+
+services:
+  api:
+    build:
+      context: ./api_app
+      dockerfile: Dockerfile.api
+    container_name: warehouse_api
+    volumes:
+      - ./common:/common:ro
+    environment:
+      PYTHONPATH: "/app:/common"
+      # Carga automáticamente variables del .env
+    env_file:
+      - ./api_app/.env
+    ports:
+      - "8000:8000"
+    restart: always
+
+  dash:
+    build:
+      context: ./dash_app
+      dockerfile: Dockerfile.dash
+    container_name: warehouse_dash
+    volumes:
+      - ./common:/common:ro
+    environment:
+      PYTHONPATH: "/app:/common"
+    ports:
+      - "8050:8050"
+    restart: always
