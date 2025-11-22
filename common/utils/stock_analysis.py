@@ -53,7 +53,7 @@ def get_avg_time_in_warehouse(reference_list: List[str]) -> Dict[str, float]:
         else:
             avg_times[ref] = 0
     
-    avg_time = {str(k): float(v) for k, v in avg_times.items()}
+    avg_times = {str(k): float(v) for k, v in avg_times.items()}
     logger.info(f"Calculated average time in warehouse for references: {avg_times}")
     return avg_times
 
