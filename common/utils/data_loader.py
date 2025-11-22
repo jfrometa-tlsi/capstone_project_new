@@ -24,6 +24,7 @@ def load_expeditions_data():
         df = pd.read_excel(f'{COMMON_DATA_PATH}/expediciones_test.xlsx')
         df['fechaTransporte'] = pd.to_datetime(df['fechaTransporte'])
         df['cliente'] = df['cliente'].astype(str)
+        df['idReferencia'] = df['idReferencia'].astype(str)
         logger.info("Expeditions data loaded successfully.")
         return df
     except:
@@ -31,6 +32,7 @@ def load_expeditions_data():
             df = pd.read_excel(f'{COMMON_DATA_PATH1}/expediciones_test.xlsx')
             df['fechaTransporte'] = pd.to_datetime(df['fechaTransporte'])
             df['cliente'] = df['cliente'].astype(str)
+            df['idReferencia'] = df['idReferencia'].astype(str)
             logger.info("Expeditions data loaded successfully.")
             return df
         except Exception as e:

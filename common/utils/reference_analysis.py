@@ -6,7 +6,7 @@ from typing import List, Dict
 
 logger = setup_logger()
 
-def get_top_references_expeditions(month: int, limit: int = 5, year: int = 2025) -> List[str]:
+def get_top_references_expeditions(month: int = 0, limit: int = 5, year: int = 2025) -> List[str]:
     """
     Return top references by total ordered quantity in expeditions.
     
