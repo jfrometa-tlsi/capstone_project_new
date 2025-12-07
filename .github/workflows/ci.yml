@@ -44,42 +44,14 @@ jobs:
       - name: Run pytest
         run: pytest
 
-      # ---------------------------
-      # 5. Activar Docker Buildx (más moderno y rápido)
-      # ---------------------------
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Build containers
+        run: docker compose build
 
-      # ---------------------------
-      # 6. Build imagen Docker: API
-      # ---------------------------
-      - name: Build API Docker image
-        run: |
-          docker build \
-            -f api_app/Dockerfile.api \
-            -t warehouse-analytics-api .
+      - name: Run containers
+        run: docker compose up -d
 
-      # ---------------------------
-      # 7. Build imagen Docker: Dash
-      # ---------------------------
-      - name: Build Dash Docker image
-        run: |
-          docker build \
-            -f dash_app/Dockerfile.dash \
-            -t warehouse-analytics-dash .
+      - name: Wait for startup
+        run: sleep 10
 
-      # ---------------------------
-      # 8. Probar docker-compose (levantar ambos servicios)
-      # ---------------------------
-      - name: Test docker-compose startup
-        run: |
-          docker compose up -d
-          sleep 10  # esperar a que ambos servicios arranquen
-          docker ps
-
-      # ---------------------------
-      # 9. Apagar los servicios siempre (éxito o fallo)
-      # ---------------------------
-      - name: Stop services
-        if: always()
-        run: docker compose down
+      - name: Show running containers
+        run: docker ps
