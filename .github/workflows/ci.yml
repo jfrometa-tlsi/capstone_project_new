@@ -70,7 +70,7 @@ jobs:
       # ---------------------------
       - name: Test docker-compose startup
         run: |
-          docker-compose up -d
+          docker compose up -d
           sleep 10  # esperar a que ambos servicios arranquen
           docker ps
 
@@ -79,4 +79,4 @@ jobs:
       # ---------------------------
       - name: Stop services
         if: always()
-        run: docker-compose down
+        run: docker compose down
